@@ -2,7 +2,6 @@ package com.finfsoft.mongo;
 
 import com.finfsoft.util.DateUtil;
 import com.finfsoft.util.MongoDBUtil;
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
@@ -15,8 +14,6 @@ import org.bson.Document;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,7 +68,7 @@ public class MoveData {
                 logger.info("结束时间：" + new Date() + " ,查询dataId数组i=： " + i + "   dataId:  " + dataIdList.get(i) + "   数量总计： " + number);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.info(e);
         }
     }
 
