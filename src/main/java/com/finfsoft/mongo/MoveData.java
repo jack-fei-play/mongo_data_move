@@ -107,7 +107,7 @@ public class MoveData {
             ArrayList<Document> documentslist = new ArrayList<>();
             while (iterator.hasNext()) {
                 Document document = iterator.next();
-                logger.debug(document);
+                logger.info(document);
                 documentslist.add(document);
             }
             logger.info("查询时间范围： " + startDate + "到： " + endDate + " 本次时间范围内查询数据个数：" + documentslist.size());
