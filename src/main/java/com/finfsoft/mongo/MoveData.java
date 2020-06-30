@@ -27,8 +27,8 @@ public class MoveData {
     public static final String PASSWORD = "spark#123";
     public static final String DB = "lanyue";
 
-    public static final String L_IP = "52.82.121.92";
-    public static final int L_PORT = 27017;
+    public static final String L_IP = "10.88.249.12";
+    public static final int L_PORT = 19912;
     public static final String L_USER_NAME = "building_user";
     public static final String L_PASSWORD = "finfobuild123";
     public static final String L_DB = "building";
@@ -39,7 +39,8 @@ public class MoveData {
     public static void main(String[] args) {
         try {
             //读取文件excel表格数据，保存到集合中
-            BufferedReader bufRead = new BufferedReader(new FileReader("E:\\work\\data_config_t.csv"));
+            //BufferedReader bufRead = new BufferedReader(new FileReader("E:\\work\\data_config_t.csv"));
+            BufferedReader bufRead = new BufferedReader(new FileReader("/data/mongo/condition/data_config_t.csv"));
             ArrayList dataIdList = new ArrayList<Integer>();
             String line;
             while ((line = bufRead.readLine()) != null) {
@@ -57,7 +58,7 @@ public class MoveData {
             //使用mongodb进行条件查询，保存到集合中,然后批量插入
             //根据dataId和dataTime进行查询和批量插入
             for (int i = 0; i < dataIdList.size(); i++) {
-                logger.info("开始时间：" + new Date() + " ,查询dataId数组下标为 i=：  " + i + "   dataId:" + dataIdList.get(i));
+                logger.info("查询dataId数组下标为 i=：  ," + i + "dataId: " + dataIdList.get(i) + ",开始时间：" + new Date());
                 BasicDBObject cond1 = new BasicDBObject();
                 cond1.put("dataId", new BasicDBObject("$eq", dataIdList.get(i)));
                 /*Date defaultStartDate = DateUtil.StringtoDate("2019-06-01  00:00:00");
@@ -66,8 +67,10 @@ public class MoveData {
                 int months = DateUtil.spaceMonths(defaultStartDate, nowDate);
                 long number = insertManyByMonth(months, defaultStartDate, cond1, realtimeDataConn, localRealtimeDataConn);
                 logger.info("结束时间：" + new Date() + " ,查询dataId数组i=： " + i + "   dataId:  " + dataIdList.get(i) + "   数量总计： " + number);*/
-                long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i));
-                logger.info("结束时间：" + new Date() + " ,查询dataId数组i=： " + i + "   dataId:  " + dataIdList.get(i) + "   数量总计： " + number);
+                Date nowDate = new Date();
+                long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i), nowDate);
+
+                logger.info("查询dataId数组下标为 i=：  ," + i + "dataId: " + dataIdList.get(i) + ",结束时间：" + new Date() + ",数量总计： " + number);
             }
         } catch (Exception e) {
             logger.info(e);
@@ -84,17 +87,16 @@ public class MoveData {
      * @param localRealtimeDataConn mongo本地数据库conn
      * @return 返回同一个dataId在mongo中总记录数
      */
-    public static long insertManyByMonth(BasicDBObject cond1, MongoCollection<Document> realtimeDataConn, MongoCollection<Document> localRealtimeDataConn, Integer dataId) {
+    public static long insertManyByMonth(BasicDBObject cond1, MongoCollection<Document> realtimeDataConn, MongoCollection<Document> localRealtimeDataConn, Integer dataId, Date nowDate) {
         //统计本次dataId下的数据总数
         long number = 0;
         int months = 0; //当前时间距离之前月份数量
-        Date nowDate = new Date();
         while (true) {
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(nowDate);
-            calendar.add(calendar.MONTH, -months); //当前月
+            calendar.add(calendar.DATE, -months * 30); //当前月
             Date startDate = calendar.getTime();
-            calendar.add(calendar.MONTH, -1);
+            calendar.add(calendar.DATE, -30);
             Date endDate = calendar.getTime(); //上个月
             //插入时间条件
             BasicDBObject cond2 = new BasicDBObject();
@@ -110,6 +112,7 @@ public class MoveData {
             FindIterable<Document> documents = realtimeDataConn.find(cond);
             MongoCursor<Document> iterator = documents.iterator();
             //int documentsNum = 0;
+            logger.info("查询时间范围： " + endDate + "到： " + startDate);
             ArrayList<Document> documentslist = new ArrayList<>();
             while (iterator.hasNext()) {
                 Document document = iterator.next();
@@ -120,14 +123,14 @@ public class MoveData {
                 logger.info(document);
             }
             if (documentslist.size() <= 0) {
-                logger.info("当前dataId:  " + dataId + "   中mongo数据已经全部读取完成,开始插入数据时间是：" + endDate);
+                logger.info("当前dataId:  " + dataId + " 中mongo数据已经全部读取完成,开始插入到mongodb数据库时间是：" + endDate);
                 break;
             }
-            logger.info("查询时间范围： " + startDate + "到： " + endDate + " 本次时间范围内查询数据个数：" + documentslist.size());
+            logger.info("本次时间范围内查询数据个数：" + documentslist.size());
             if (documentslist.size() > 0) {
                 //mongo批量插入
                 localRealtimeDataConn.insertMany(documentslist);
-                logger.info("查询时间范围： " + startDate + "到： " + endDate + " 本次时间范围内批量插入成功！");
+                logger.info("本次时间范围内批量插入成功！");
             }
             number += documentslist.size();
             months++;
