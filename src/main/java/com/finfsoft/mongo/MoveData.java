@@ -61,15 +61,8 @@ public class MoveData {
                 logger.info("查询dataId数组下标为 i=：  ," + i + "dataId: " + dataIdList.get(i) + ",开始时间：" + new Date());
                 BasicDBObject cond1 = new BasicDBObject();
                 cond1.put("dataId", new BasicDBObject("$eq", dataIdList.get(i)));
-                /*Date defaultStartDate = DateUtil.StringtoDate("2019-06-01  00:00:00");
-                Date nowDate = new Date();
-                //相差月份计算
-                int months = DateUtil.spaceMonths(defaultStartDate, nowDate);
-                long number = insertManyByMonth(months, defaultStartDate, cond1, realtimeDataConn, localRealtimeDataConn);
-                logger.info("结束时间：" + new Date() + " ,查询dataId数组i=： " + i + "   dataId:  " + dataIdList.get(i) + "   数量总计： " + number);*/
                 Date nowDate = new Date();
                 long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i), nowDate);
-
                 logger.info("查询dataId数组下标为 i=：  ," + i + "dataId: " + dataIdList.get(i) + ",结束时间：" + new Date() + ",数量总计： " + number);
             }
         } catch (Exception e) {
@@ -85,6 +78,8 @@ public class MoveData {
      * @param cond1                 查询条件dataId
      * @param realtimeDataConn      mongo云端数据库conn
      * @param localRealtimeDataConn mongo本地数据库conn
+     * @param dataId    当前筛选条件dataId
+     * @param nowDate   当前查询的开始时间
      * @return 返回同一个dataId在mongo中总记录数
      */
     public static long insertManyByMonth(BasicDBObject cond1, MongoCollection<Document> realtimeDataConn, MongoCollection<Document> localRealtimeDataConn, Integer dataId, Date nowDate) {
@@ -117,9 +112,6 @@ public class MoveData {
             while (iterator.hasNext()) {
                 Document document = iterator.next();
                 documentslist.add(document);
-                //documentsNum++;
-                //number++;
-                //localRealtimeDataConn.insertOne(document);
                 logger.info(document);
             }
             if (documentslist.size() <= 0) {
@@ -138,6 +130,12 @@ public class MoveData {
         return number;
     }
 }
+        /*Date defaultStartDate = DateUtil.StringtoDate("2019-06-01  00:00:00");
+        Date nowDate = new Date();
+        //相差月份计算
+        int months = DateUtil.spaceMonths(defaultStartDate, nowDate);
+        long number = insertManyByMonth(months, defaultStartDate, cond1, realtimeDataConn, localRealtimeDataConn);
+        logger.info("结束时间：" + new Date() + " ,查询dataId数组i=： " + i + "   dataId:  " + dataIdList.get(i) + "   数量总计： " + number);*/
 
         /*for (int j = 0; j < months + 1; j++) {
             Calendar calendar = new GregorianCalendar();
