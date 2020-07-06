@@ -72,10 +72,12 @@ public class MoveData {
             int index = nowDataIdList.size() / 2;
             //线程1
             List threadList1 = nowDataIdList.subList(0, index);
+            threadList1=distinctList1(threadList1,689);
             MoveDataThread moveDataThread1 = new MoveDataThread(threadList1, database, database1,cyclicBarrier);
             moveDataThread1.start();
             //线程2
             List threadList2 = nowDataIdList.subList(index, nowDataIdList.size());
+            threadList2=distinctList1(threadList2,591);
             MoveDataThread moveDataThread2 = new MoveDataThread(threadList2, database, database1,cyclicBarrier);
             moveDataThread2.start();
 //            for (int i = 0; i < nowDataIdList.size(); i++) {
@@ -117,6 +119,13 @@ public class MoveData {
             }
         }
         return newList;
+    }
+
+    /**
+     * 根据下标截取list
+     */
+    public static List distinctList1(List dataIdList,int index) {
+        return dataIdList.subList(index, dataIdList.size());
     }
 
     /**

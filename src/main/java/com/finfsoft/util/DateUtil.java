@@ -8,7 +8,7 @@ import java.util.Date;
 public class DateUtil {
     //字符串转日期类型
     public static Date StringtoDate(String dateStr) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = sdf.parse(dateStr);
         return date;
     }

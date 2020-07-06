@@ -1,6 +1,7 @@
 package com.finfsoft.thread;
 
 import com.finfsoft.mongo.MoveData;
+import com.finfsoft.util.DateUtil;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
@@ -40,6 +41,14 @@ public class MoveDataThread extends Thread {
                 BasicDBObject cond1 = new BasicDBObject();
                 cond1.put("dataId", new BasicDBObject("$eq", dataIdList.get(i)));
                 Date nowDate = new Date();
+                if (dataIdList.get(i).equals(13137)) {
+                    Date date = DateUtil.StringtoDate("2020-02-07 10:36:19");
+                    nowDate = date;
+                }
+                if (dataIdList.get(i).equals(14568)) {
+                    Date date = DateUtil.StringtoDate("2019-05-13 10:09:24");
+                    nowDate = date;
+                }
                 long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i), nowDate);
                 logger.info("线程：" + Thread.currentThread().getName() + " ，查询dataId数组下标为 i=：  " + i + " ，dataId: " + dataIdList.get(i) + " ，结束时间：" + new Date() + ",数量总计： " + number);
 
@@ -93,7 +102,7 @@ public class MoveDataThread extends Thread {
             while (iterator.hasNext()) {
                 Document document = iterator.next();
                 documentslist.add(document);
-                logger.info("线程：" + Thread.currentThread().getName() + " ,当前dataId:  " + dataId + " ，"+document);
+                logger.info("线程：" + Thread.currentThread().getName() + " ,当前dataId:  " + dataId + " ，" + document);
             }
             if (documentslist.size() <= 0) {
                 logger.info("线程：" + Thread.currentThread().getName() + " ,当前dataId:  " + dataId + " ，中mongo数据已经全部读取完成,开始插入到mongodb数据库时间是：" + endDate);
