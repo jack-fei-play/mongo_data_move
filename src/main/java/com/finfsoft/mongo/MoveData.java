@@ -73,21 +73,15 @@ public class MoveData {
             //线程1
             List threadList1 = nowDataIdList.subList(0, index);
             threadList1=distinctList1(threadList1,689);
+            threadList1=distinctList1(threadList1,241);
             MoveDataThread moveDataThread1 = new MoveDataThread(threadList1, database, database1,cyclicBarrier);
             moveDataThread1.start();
             //线程2
             List threadList2 = nowDataIdList.subList(index, nowDataIdList.size());
             threadList2=distinctList1(threadList2,591);
+            threadList2=distinctList1(threadList2,211);
             MoveDataThread moveDataThread2 = new MoveDataThread(threadList2, database, database1,cyclicBarrier);
             moveDataThread2.start();
-//            for (int i = 0; i < nowDataIdList.size(); i++) {
-//                logger.info("查询dataId数组下标为 i=：  " + i + " ,dataId: " + dataIdList.get(i) + ",开始时间：" + new Date());
-//                BasicDBObject cond1 = new BasicDBObject();
-//                cond1.put("dataId", new BasicDBObject("$eq", dataIdList.get(i)));
-//                Date nowDate = new Date();
-//                long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i), nowDate);
-//                logger.info("查询dataId数组下标为 i=：  " + i + " ,dataId: " + dataIdList.get(i) + ",结束时间：" + new Date() + ",数量总计： " + number);
-//            }
         } catch (Exception e) {
             logger.info(e);
         }
