@@ -49,6 +49,14 @@ public class MoveDataThread extends Thread {
                     Date date = DateUtil.StringtoDate("2019-05-13 10:09:24");
                     nowDate = date;
                 }
+                if (dataIdList.get(i).equals(13387)) {
+                    Date date = DateUtil.StringtoDate("2019-11-11 10:02:14");
+                    nowDate = date;
+                }
+//                if (dataIdList.get(i).equals(14923)) {
+//                    Date date = DateUtil.StringtoDate("2019-11-11 09:49:44");
+//                    nowDate = date;
+//                }
                 long number = insertManyByMonth(cond1, realtimeDataConn, localRealtimeDataConn, (Integer) dataIdList.get(i), nowDate);
                 logger.info("线程：" + Thread.currentThread().getName() + " ，查询dataId数组下标为 i=：  " + i + " ，dataId: " + dataIdList.get(i) + " ，结束时间：" + new Date() + ",数量总计： " + number);
 
