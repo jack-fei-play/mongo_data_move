@@ -26,7 +26,7 @@ public class MoveData {
     public static final String PASSWORD = "spark#123";
     public static final String DB = "lanyue";
 
-    public static final String L_IP = "10.88.249.12";
+    public static final String L_IP = "10.88.249.14";
     public static final int L_PORT = 19912;
     public static final String L_USER_NAME = "building_user";
     public static final String L_PASSWORD = "finfobuild123";
@@ -74,12 +74,14 @@ public class MoveData {
             List threadList1 = nowDataIdList.subList(0, index);
             threadList1=distinctList1(threadList1,689);
             threadList1=distinctList1(threadList1,241);
+            threadList1=distinctList1(threadList1,123);
             MoveDataThread moveDataThread1 = new MoveDataThread(threadList1, database, database1,cyclicBarrier);
             moveDataThread1.start();
             //线程2
             List threadList2 = nowDataIdList.subList(index, nowDataIdList.size());
             threadList2=distinctList1(threadList2,591);
             threadList2=distinctList1(threadList2,211);
+            threadList2=distinctList1(threadList2,61);
             MoveDataThread moveDataThread2 = new MoveDataThread(threadList2, database, database1,cyclicBarrier);
             moveDataThread2.start();
         } catch (Exception e) {
